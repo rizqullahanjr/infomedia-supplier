@@ -8,6 +8,12 @@ Proyek ini terdiri dari dua folder utama:
 - **backend**: Menggunakan Golang
 - **frontend**: Menggunakan Next.js
 
+## 🗄️ Database Design
+
+Berikut adalah Entity Relationship Diagram (ERD) untuk sistem Supplier Management:
+
+![ERD Diagram](./erd-diagram.png)
+
 ## Prasyarat
 
 Sebelum menjalankan aplikasi, pastikan sudah menginstal:
