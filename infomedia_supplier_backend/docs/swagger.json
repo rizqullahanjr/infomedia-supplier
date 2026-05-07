@@ -1,0 +1,317 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API Contract for Supplier Management",
+        "title": "Supplier Management API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
+    "paths": {
+        "/suppliers": {
+            "get": {
+                "description": "Endpoint for fetching list all supplier data.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Suppliers"
+                ],
+                "summary": "Get All Suppliers",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.SuccessResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Endpoint for storing new supplier data with address, contacts and groups.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Suppliers"
+                ],
+                "summary": "Create a New Supplier",
+                "parameters": [
+                    {
+                        "description": "Payload data supplier",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.CreateSupplierInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Supplier created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.CreateSupplierSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid JSON format or required field is missing",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.BadRequestResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Duplicate data: Supplier with that Name or Nickname is already registered",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.ConflictResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/suppliers/summary": {
+            "get": {
+                "description": "Endpoint for fetching supplier summary statistics.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Suppliers"
+                ],
+                "summary": "Get Supplier Summary Stats",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.SuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/suppliers/{id}/status": {
+            "patch": {
+                "description": "Endpoint for updating supplier status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Suppliers"
+                ],
+                "summary": "Update Supplier Status",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Supplier ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "New Status (Active, In Progress, Blocked)",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.UpdateStatusInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.SuccessResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "controllers.AddressInput": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "Fatmawati Raya St, 123"
+                },
+                "is_main": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Head Office"
+                }
+            }
+        },
+        "controllers.BadRequestResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Invalid JSON format or required field is missing"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "error"
+                }
+            }
+        },
+        "controllers.ConflictResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Supplier with that Name or Nickname is already registered"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "error"
+                }
+            }
+        },
+        "controllers.ContactInput": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "einstein@gmail.com"
+                },
+                "is_main": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "job_position": {
+                    "type": "string",
+                    "example": "CEO"
+                },
+                "mobile": {
+                    "type": "string",
+                    "example": "0811234567"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Albert"
+                },
+                "phone": {
+                    "type": "string",
+                    "example": "021.123456"
+                }
+            }
+        },
+        "controllers.CreateSupplierInput": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "addresses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/controllers.AddressInput"
+                    }
+                },
+                "contacts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/controllers.ContactInput"
+                    }
+                },
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/controllers.GroupInput"
+                    }
+                },
+                "name": {
+                    "type": "string",
+                    "example": "PT Setroom Indonesia"
+                },
+                "nickname": {
+                    "type": "string",
+                    "example": "Setroom"
+                }
+            }
+        },
+        "controllers.CreateSupplierResponseData": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "example": 4
+                },
+                "name": {
+                    "type": "string",
+                    "example": "PT Setroom Indonesia"
+                }
+            }
+        },
+        "controllers.CreateSupplierSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/controllers.CreateSupplierResponseData"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Supplier created successfully"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "controllers.GroupInput": {
+            "type": "object",
+            "properties": {
+                "group_name": {
+                    "type": "string",
+                    "example": "Industry"
+                },
+                "is_active": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "value": {
+                    "type": "string",
+                    "example": "Manufacture"
+                }
+            }
+        },
+        "controllers.SuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "message": {
+                    "type": "string",
+                    "example": "Action completed successfully"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "controllers.UpdateStatusInput": {
+            "type": "object",
+            "required": [
+                "status"
+            ],
+            "properties": {
+                "status": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

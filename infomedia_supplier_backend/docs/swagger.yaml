@@ -1,0 +1,217 @@
+basePath: /api/v1
+definitions:
+  controllers.AddressInput:
+    properties:
+      address:
+        example: Fatmawati Raya St, 123
+        type: string
+      is_main:
+        example: true
+        type: boolean
+      name:
+        example: Head Office
+        type: string
+    type: object
+  controllers.BadRequestResponse:
+    properties:
+      message:
+        example: Invalid JSON format or required field is missing
+        type: string
+      status:
+        example: error
+        type: string
+    type: object
+  controllers.ConflictResponse:
+    properties:
+      message:
+        example: Supplier with that Name or Nickname is already registered
+        type: string
+      status:
+        example: error
+        type: string
+    type: object
+  controllers.ContactInput:
+    properties:
+      email:
+        example: einstein@gmail.com
+        type: string
+      is_main:
+        example: true
+        type: boolean
+      job_position:
+        example: CEO
+        type: string
+      mobile:
+        example: "0811234567"
+        type: string
+      name:
+        example: Albert
+        type: string
+      phone:
+        example: "021.123456"
+        type: string
+    type: object
+  controllers.CreateSupplierInput:
+    properties:
+      addresses:
+        items:
+          $ref: '#/definitions/controllers.AddressInput'
+        type: array
+      contacts:
+        items:
+          $ref: '#/definitions/controllers.ContactInput'
+        type: array
+      groups:
+        items:
+          $ref: '#/definitions/controllers.GroupInput'
+        type: array
+      name:
+        example: PT Setroom Indonesia
+        type: string
+      nickname:
+        example: Setroom
+        type: string
+    required:
+    - name
+    type: object
+  controllers.CreateSupplierResponseData:
+    properties:
+      id:
+        example: 4
+        type: integer
+      name:
+        example: PT Setroom Indonesia
+        type: string
+    type: object
+  controllers.CreateSupplierSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/controllers.CreateSupplierResponseData'
+      message:
+        example: Supplier created successfully
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  controllers.GroupInput:
+    properties:
+      group_name:
+        example: Industry
+        type: string
+      is_active:
+        example: true
+        type: boolean
+      value:
+        example: Manufacture
+        type: string
+    type: object
+  controllers.SuccessResponse:
+    properties:
+      data: {}
+      message:
+        example: Action completed successfully
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  controllers.UpdateStatusInput:
+    properties:
+      status:
+        type: string
+    required:
+    - status
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API Contract for Supplier Management
+  title: Supplier Management API
+  version: "1.0"
+paths:
+  /suppliers:
+    get:
+      description: Endpoint for fetching list all supplier data.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.SuccessResponse'
+      summary: Get All Suppliers
+      tags:
+      - Suppliers
+    post:
+      consumes:
+      - application/json
+      description: Endpoint for storing new supplier data with address, contacts and
+        groups.
+      parameters:
+      - description: Payload data supplier
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CreateSupplierInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Supplier created successfully
+          schema:
+            $ref: '#/definitions/controllers.CreateSupplierSuccessResponse'
+        "400":
+          description: Invalid JSON format or required field is missing
+          schema:
+            $ref: '#/definitions/controllers.BadRequestResponse'
+        "409":
+          description: 'Duplicate data: Supplier with that Name or Nickname is already
+            registered'
+          schema:
+            $ref: '#/definitions/controllers.ConflictResponse'
+      summary: Create a New Supplier
+      tags:
+      - Suppliers
+  /suppliers/{id}/status:
+    patch:
+      consumes:
+      - application/json
+      description: Endpoint for updating supplier status
+      parameters:
+      - description: Supplier ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: New Status (Active, In Progress, Blocked)
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.UpdateStatusInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.SuccessResponse'
+      summary: Update Supplier Status
+      tags:
+      - Suppliers
+  /suppliers/summary:
+    get:
+      description: Endpoint for fetching supplier summary statistics.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.SuccessResponse'
+      summary: Get Supplier Summary Stats
+      tags:
+      - Suppliers
+swagger: "2.0"
